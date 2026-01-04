@@ -8,7 +8,7 @@ use App\Models\Transaction;
 class TransactionController extends Controller
 {
     // SHOW CREATE FORM
-    public function create()
+    public function index()
     {
         return view('transactions.create');
     }

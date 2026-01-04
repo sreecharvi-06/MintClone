@@ -2,30 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Budget;
+use Illuminate\Http\Request;
 
 class BudgetController extends Controller
 {
+    public function index()
+    {
+        $budgets = Budget::where('user_id', auth()->id())->get();
+        return view('budgets.create', compact('budgets'));
+    }
+
     public function create()
     {
         return view('budgets.create');
     }
 
-   public function store(Request $request)
-{
-    $request->validate([
-        'category' => 'required',
-        'limit_amount' => 'required|numeric'
-    ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'category' => 'required',
+            'amount' => 'required|numeric',
+        ]);
 
-    Budget::create([
-        'user_id' => auth()->id(),
-        'category' => $request->category,
-        'limit_amount' => $request->limit_amount
-    ]);
+        Budget::create([
+            'user_id' => auth()->id(),
+            'category' => $request->category,
+            'amount' => $request->amount,
+        ]);
 
-    return redirect('/dashboard');
-}
-
+        return redirect('/budgets');
+    }
 }

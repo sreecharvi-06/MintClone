@@ -16,6 +16,13 @@ class DashboardController extends Controller
         $userId = Auth::id();
 
         /* =======================
+           SAFETY CHECK
+        ========================*/
+        if (!$userId) {
+            return redirect('/login');
+        }
+
+        /* =======================
            ACCOUNTS & NET WORTH
         ========================*/
         $assets = Account::where('user_id', $userId)
@@ -28,7 +35,8 @@ class DashboardController extends Controller
 
         $netWorth = $assets - $liabilities;
 
-        $accountsCount = Account::where('user_id', $userId)->count();
+        $accounts = Account::where('user_id', $userId)->get();
+        $accountsCount = $accounts->count();
 
         /* =======================
            TRANSACTIONS
@@ -60,12 +68,15 @@ class DashboardController extends Controller
         }
 
         /* =======================
-           BILLS & GOALS
+           BILLS
         ========================*/
         $bills = Bill::where('user_id', $userId)
             ->orderBy('due_date')
             ->get();
 
+        /* =======================
+           GOALS
+        ========================*/
         $goals = Goal::where('user_id', $userId)->get();
 
         /* =======================
@@ -73,9 +84,10 @@ class DashboardController extends Controller
         ========================*/
         return view('dashboard.index', compact(
             'netWorth',
+            'accounts',
             'accountsCount',
-            'transactionsCount',
             'transactions',
+            'transactionsCount',
             'spendingByCategory',
             'budgets',
             'bills',

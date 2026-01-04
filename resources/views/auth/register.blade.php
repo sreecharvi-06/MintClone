@@ -73,6 +73,10 @@ button{
     text-align:center;
 }
 .switch a{color:#00e5ff;text-decoration:none;}
+.error{
+    color:#ff6b6b;
+    margin-bottom:15px;
+}
 </style>
 </head>
 
@@ -80,36 +84,44 @@ button{
 <div class="auth-box">
 <h2>Register</h2>
 
+{{-- 🔴 SHOW VALIDATION ERRORS --}}
+@if ($errors->any())
+    <div class="error">
+        @foreach ($errors->all() as $error)
+            <p>{{ $error }}</p>
+        @endforeach
+    </div>
+@endif
+
 <form method="POST" action="/register">
 @csrf
 
 <div class="input-group">
-<input type="text" name="name" required placeholder=" ">
-<label>Username</label>
-<i class="fa fa-user"></i>
+    <input type="text" name="name" required placeholder=" ">
+    <label>Username</label>
+    <i class="fa fa-user"></i>
 </div>
 
 <div class="input-group">
-<input type="email" name="email" required placeholder=" ">
-<label>Email</label>
-<i class="fa fa-envelope"></i>
+    <input type="email" name="email" required placeholder=" ">
+    <label>Email</label>
+    <i class="fa fa-envelope"></i>
 </div>
 
 <div class="input-group">
-<input type="password" name="password" required placeholder=" ">
-<label>Password</label>
-<i class="fa fa-lock"></i>
+    <input type="password" name="password" required placeholder=" ">
+    <label>Password</label>
+    <i class="fa fa-lock"></i>
 </div>
 
 <button type="submit">Register</button>
 
 <div class="switch">
-Already have an account?
-<a href="/login">Sign In</a>
+    Already have an account?
+    <a href="/login">Sign In</a>
 </div>
+
 </form>
 </div>
 </body>
 </html>
-
-

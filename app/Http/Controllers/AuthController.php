@@ -9,36 +9,54 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+    /* =========================
+       SHOW LOGIN PAGE
+    ==========================*/
     public function showLogin()
     {
         return view('auth.login');
     }
 
+    /* =========================
+       SHOW REGISTER PAGE
+    ==========================*/
     public function showRegister()
     {
         return view('auth.register');
     }
 
+    /* =========================
+       REGISTER USER
+    ==========================*/
     public function register(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6'
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users',
+            'password' => 'required|min:6',
         ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password)
+        $user = User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
         ]);
 
-        return redirect('/login');
+        // 🔴 IMPORTANT: login user after register
+        Auth::login($user);
+
+        return redirect('/dashboard');
     }
 
+    /* =========================
+       LOGIN USER
+    ==========================*/
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required',
+        ]);
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
@@ -46,10 +64,13 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Invalid login credentials'
+            'email' => 'Invalid login credentials',
         ]);
     }
 
+    /* =========================
+       LOGOUT USER
+    ==========================*/
     public function logout(Request $request)
     {
         Auth::logout();

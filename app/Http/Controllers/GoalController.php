@@ -7,7 +7,7 @@ use App\Models\Goal;
 
 class GoalController extends Controller
 {
-    public function create()
+    public function index()
     {
         return view('goals.create');
     }
